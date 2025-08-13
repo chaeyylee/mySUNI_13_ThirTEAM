@@ -12,4 +12,4 @@ thefuzz
 tqdm
 kiwipiepy
 openai
-fonts-nanum
+
