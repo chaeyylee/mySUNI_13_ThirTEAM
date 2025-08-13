@@ -9,10 +9,15 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from pathlib import Path
 import os, base64, glob
 from openai import OpenAI
+import matplotlib
+import platform
 
 # 한글 폰트 설정
-matplotlib.rc("font", family="NanumGothic")
-plt.rcParams["axes.unicode_minus"] = False
+if platform.system() == "Windows":
+    matplotlib.rc("font", family="Malgun Gothic")
+else:
+    matplotlib.rc("font", family="DejaVu Sans")  # Linux Render 서버용
+matplotlib.rcParams["axes.unicode_minus"] = False
 
 
 def run_remark_analysis(input_csv_path="uploads/result.csv",
@@ -184,5 +189,4 @@ def run_remark_analysis(input_csv_path="uploads/result.csv",
             print("❌ GPT 응답 실패 또는 응답 없음")
     else:
         print("❌ 트렌드 그래프 이미지가 없어 GPT 분석 요청을 건너뜁니다.")
-
 
