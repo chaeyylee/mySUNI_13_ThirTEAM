@@ -1,0 +1,222 @@
+.top-panel {
+  display: flex;
+  align-items: flex-start;
+  padding: 24px 32px;
+  gap: 40px;
+  background-color: #f5f6fa;
+}
+
+.upload-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 280px;
+}
+
+.upload-box {
+  width: 100%;
+  background-color: #eef1f7;
+  border: 2px dashed #ccc;
+  padding: 24px 0;
+  text-align: center;
+  font-size: 16px;
+  color: #333;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.analyze-button {
+  width: 100%;
+  background-color: #4e5ae8;
+  color: white;
+  border: none;
+  padding: 14px 0;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.analyze-button:hover {
+  background-color: #3c49c5;
+}
+
+.kpi-panel {
+  display: flex;
+  gap: 16px;
+}
+
+.kpi-card {
+  background-color: #4e5ae8;
+  color: white;
+  padding: 16px 24px;
+  border-radius: 10px;
+  width: 150px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.kpi-value {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.kpi-label {
+  font-size: 18px;  
+  font-weight: 700; 
+  margin-top: 10px;
+  opacity: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filter-panel {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  padding: 0 32px 24px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-group label {
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.filter-group select {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  min-width: 160px;
+}
+
+.filter-button {
+  padding: 10px 16px;
+  background-color: #4e5ae8;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.filter-button:hover {
+  background-color: #3c49c5;
+}
+
+.charts-container {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 32px 40px;
+  gap: 24px;
+}
+
+.chart {
+  background-color: white;
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.chart h3 {
+  margin: 0 0 12px;
+  font-size: 16px;
+  color: #2c2e60;
+}
+
+.chart-placeholder {
+  height: 200px;
+  background-color: #eef1f7;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 14px;
+}
+
+.chart-wide {
+  width: 100%;
+}
+
+.chart-half {
+  flex: 1;
+  min-width: 320px;
+}
+
+.preview-toggle-button {
+  background-color: #eee;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.preview-toggle-button:hover {
+  background-color: #ddd;
+}
+
+.csv-table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.csv-table th, .csv-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+  font-size: 14px;
+  word-break: break-word;
+  white-space: normal;
+  max-width: 250px;
+}
+
+.kpi-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #2c2e60;
+}
+
+/* 기본 셀 설정 */
+#csv-output-table th,
+#csv-output-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+  vertical-align: top;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+
+  min-width: 100px;
+  max-width: 300px;
+}
+
+/* ✅ operator, result, status 칼럼만 넓게 설정 */
+#csv-output-table th:nth-child(6),
+#csv-output-table td:nth-child(6) {
+  min-width: 120px;
+}
+
+#csv-output-table th:nth-child(13),
+#csv-output-table td:nth-child(13) {
+  min-width: 120px;
+}
+
+#csv-output-table th:nth-child(14),
+#csv-output-table td:nth-child(14) {
+  min-width: 120px;
+}

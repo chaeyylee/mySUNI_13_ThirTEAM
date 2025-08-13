@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CSV Dashboard</title>
+
+  <!-- ✅ 외부 CSS 연결 -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f6fa;
+    }
+
+    .header {
+      background-color: #2c2e60;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 32px;
+    }
+
+    .header-title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .header-button {
+      background-color: transparent;
+      border: 1px solid white;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .header-button:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .top-panel {
+      display: flex;
+      justify-content: space-between;
+      padding: 24px 32px;
+      gap: 40px;
+    }
+
+    .upload-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 280px;
+    }
+
+    .upload-box {
+      width: 425px;
+      background-color: #eef1f7;
+      border: 2px dashed #ccc;
+      padding: 24px 40px;
+      text-align: center;
+      font-size: 16px;
+      color: #333;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .upload-box span#file-names {
+      margin-top: 10px;
+      font-size: 14px;
+      text-align: center;
+      white-space: pre-wrap; /* 줄바꿈 허용 */
+    }
+
+    .analyze-button {
+      width: 509px;
+      background-color: #4e5ae8;
+      color: white;
+      border: none;
+      padding: 12px 16px;
+      font-size: 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    .analyze-button:hover {
+      background-color: #3c49c5;
+    }
+
+    .kpi-panel {
+      display: flex;
+      gap: 16px;
+    }
+
+    .kpi-card {
+      background-color: #5c5ce0;
+      color: white;
+      border-radius: 12px;
+      padding: 20px;
+      width: 220px;     
+      height: 130px;    
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.2s;
+    }
+
+    .kpi-card:hover {
+      transform: scale(1.02);
+    }
+
+    .kpi-value {
+      font-size: 26px;   /* 숫자 크기 유지 또는 더 크게 */
+      font-weight: bold;
+    }
+
+    .kpi-label {
+      font-size: 16px;   /* 라벨 글자 크기 */
+      margin-top: 8px;
+    }
+
+    .filter-panel {
+      display: flex;
+      align-items: flex-end;
+      gap: 24px;
+      padding: 0 32px 24px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .filter-group label {
+      font-size: 14px;
+      margin-bottom: 4px;
+      color: #333;
+    }
+
+    .filter-group select {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      min-width: 160px;
+    }
+
+    .filter-button {
+      padding: 10px 16px;
+      background-color: #4e5ae8;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .filter-button:hover {
+      background-color: #3c49c5;
+    }
+
+    .charts-container {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 0 32px 40px;
+      gap: 24px;
+    }
+
+    .chart {
+      background-color: white;
+      border-radius: 12px;
+      padding: 16px 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .chart h3 {
+      margin: 0 0 12px;
+      font-size: 16px;
+      color: #2c2e60;
+    }
+
+    .chart-placeholder {
+      height: 200px;
+      background-color: #eef1f7;
+      border: 1px dashed #ccc;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #888;
+      font-size: 14px;
+    }
+
+    .chart-wide {
+      width: 100%;
+    }
+
+    .chart-half {
+      flex: 1;
+      min-width: 320px;
+    }
+
+    .csv-preview-card {
+      background-color: white;
+      border-radius: 12px;
+      margin: 0 32px 40px;
+      padding: 16px 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .csv-preview-card h3 {
+      margin: 0 0 12px;
+      font-size: 16px;
+      color: #2c2e60;
+    }
+
+    #csv-output-text, #csv-output-table {
+      background-color: #f0f0f0;
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      max-height: 300px;
+    }
+
+    .preview-toggle-button {
+      background-color: #e0e4f7;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .preview-toggle-button:hover {
+      background-color: #d2d8f0;
+    }
+
+    table.csv-table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      table-layout: auto;
+    }
+
+    .csv-table th, .csv-table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+      font-size: 14px;
+      word-break: break-word;
+      white-space: nowrap;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .csv-table th {
+      background-color: #eee;
+    }
+
+    .chart-box {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .chart-box h3 {
+      margin-top: 0;
+      ont-size: 18px;
+      font-weight: 600;
+    }
+
+    .chart-box img {
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 600px;
+    }
+
+    table, th, td {
+      border: 1px solid #ccc;
+      padding: 6px 10px;
+    }
+    
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .summary-box {
+      background: #f5f5f5;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+    .summary-item {
+      margin-bottom: 10px;
+      padding: 6px;
+      border-left: 4px solid #4caf50;
+      background-color: #ffffff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-title">CSV Data Analysis Dashboard</div>
+    <button class="header-button">SK_mySUNI x ThirTEAM</button>
+  </div>
+
+  <div class="top-panel">
+    <div class="upload-panel">
+      <!-- ✅ 다중 CSV 업로드 폼 -->
+      <form action="/upload" method="post" enctype="multipart/form-data" id="csv-upload-form">
+        <label for="csvMultiInput" class="upload-box">
+          <p>📁 Choose CSV file</p>
+          <sapn id="file-names"></span> <!--파일 이름 표시 영역-->
+        </label>
+        <input type="file" id="csvMultiInput" name="files" accept=".csv" multiple style="display: none;" />
+        <button class="analyze-button" type="submit">Run Analysis</button>
+      </form>
+
+      <!-- 아래 스크립트 추가 -->
+      <script>
+        const fileInput = document.getElementById("csvMultiInput");
+        const fileNames = document.getElementById("file-names");
+
+        fileInput.addEventListener("change", () => {
+        const files = Array.from(fileInput.files);
+        if (files.length === 0) {
+          fileNames.textContent = "선택된 파일 없음";
+        } else {
+          fileNames.textContent = files.map(f => f.name).join(",\n");
+        }
+      });
+      </script>
+
+    </div>
+
+
+    <div class="kpi-panel">
+      <div class="kpi-card">
+        <div class="kpi-value">{{ kpis.defect_rate }}</div>
+        <div class="kpi-label">DEFECT RATE</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value">{{ kpis.average_qty }}</div>
+        <div class="kpi-label">AVG PRODUCTION QTY</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value">{{ kpis.average_electricity }}</div>
+        <div class="kpi-label">AVG ELECTRICITY</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-container">
+
+    <!-- CSV 미리보기 영역 -->
+    <div class="chart chart-wide">
+      <h3>CSV Preview</h3>
+      <div style="overflow-x: auto; width: 100%;">
+        <div id="csv-output-table" style="min-width: 800px;">
+          {{ table | safe }}
+        </div>
+      </div>
+    </div>
+
+    <!-- 📈 생산량 그래프 -->
+    <div class="chart chart-wide">
+      <h3>Production Trend</h3>
+      <div>{{ production_chart | safe }}</div>
+    </div>
+
+    <!-- ✅ SPC Chart - Electricity -->
+    <div class="chart chart-wide">
+      <h3>SPC X-bar Chart by Line - Electricity</h3>
+      {% if spc_by_line %}
+        {{ spc_by_line | safe }}
+      {% else %}
+        <div class="chart-placeholder">None</div>
+      {% endif %}
+    </div>
+
+    <!-- ✅ SPC Chart - Gas -->
+    <div class="chart chart-wide">
+      <h3>SPC X-bar Chart by Line - Gas</h3>
+      {% if spc_by_line_gas %}
+        {{ spc_by_line_gas | safe }}
+      {% else %}
+        <div class="chart-placeholder">None</div>
+      {% endif %}
+    </div>
+
+    <!-- 🔍 공장 간 에너지 사용량 차이 (ANOVA) -->
+    {% if anova_results %}
+    <div class="chart chart-wide">
+      <h3>Energy Usage Differences Between Factories (ANOVA)</h3>
+      <div style="display: flex; gap: 24px;">
+        <div style="flex: 1;">
+          <h4>Electricity Consumption</h4>
+          {% if anova_results.elec.is_significant %}
+            {% if anova_results.elec.p_value < 0.0001 %}
+              <p style="color:green;">✅ Electricity consumption is significantly different across different factories (p < 0.0001)</p>
+            {% else %}
+              <p style="color:green;">✅ Electricity consumption is significantly different across different factories (p = {{ '%.4f'|format(anova_results.elec.p_value) }})</p>
+            {% endif %}
+          {% else %}
+            <p style="color:red;">❌ Electricity consumption is not significantly different across different factories (p = {{ '%.4f'|format(anova_results.elec.p_value) }})</p>
+          {% endif %}
+          {{ anova_results.elec.anova_table|safe }}
+        </div>
+
+        <div style="flex: 1;">
+          <h4>Gas Consumption</h4>
+          {% if anova_results.gas.is_significant %}
+            {% if anova_results.gas.p_value < 0.0001 %}
+              <p style="color:green;">✅ Gas consumption is significantly different across different factories (p < 0.0001)</p>
+            {% else %}
+              <p style="color:green;">✅ Gas consumption is significantly different across different factories (p = {{ '%.4f'|format(anova_results.gas.p_value) }})</p>
+            {% endif %}
+          {% else %}
+            <p style="color:red;">❌ Gas consumption is not significantly different across different factories (p = {{ '%.4f'|format(anova_results.gas.p_value) }})</p>
+          {% endif %}
+          {{ anova_results.gas.anova_table|safe }}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- 🔮 예측 결과 시각화 (전력/가스) -->
+    <div class="chart chart-half">
+      <h3>Electricity Usage Forecast</h3>
+      {% if forecast_elec %}
+        {{ forecast_elec | safe }}
+      {% else %}
+        <p>None</p>
+      {% endif %}
+    </div>
+
+    <div class="chart chart-half">
+      <h3>Gas Usage Forecast</h3>
+      {% if forecast_gas %}
+        {{ forecast_gas | safe }}
+      {% else %}
+        <p>None</p>
+      {% endif %}
+    </div>
+
+    <!-- 🏭 Factory & Line별 생산/불량 수량 -->
+    <div class="chart chart-wide">
+      <h3>Produced & Defect Quantity by Factory and Line</h3>
+
+      <div style="display: flex; gap: 24px;">
+        <!-- 📦 Produced Quantity -->
+        <div style="flex: 1;">
+          <h4>Produced Quantity</h4>
+          {{ produced_chart | safe }}
+        </div>
+
+        <!-- ❌ Defect Quantity -->
+        <div style="flex: 1;">
+          <h4>Defect Quantity</h4>
+          {{ defect_bar_chart | safe }}
+        </div>
+      </div>
+    </div>
+
+    <!-- 📊 불량률 그래프 -->
+    <div class="chart chart-half">
+      <h3>Defect Rate Distribution</h3>
+      <div>{{ defect_chart | safe }}</div>
+    </div>
+
+    <!-- 📊 Pareto Chart: 라인별 누적 불량 기여도 -->
+    <div class="chart chart-half">
+      <h3>Cumulative Defect Contribution by Line</h3>
+      {{ pareto_chart_line | safe }}
+    </div>
+
+    <!-- 📊 공정별 누적 불량 기여도 (Pareto) -->
+    <div class="chart chart-half">
+      <h3>Cumulative Defect Contribution by Equipment</h3>
+      <div>{{ pareto_chart | safe }}</div>
+    </div>
+
+
+    <!-- 🧪 이상치 원인으로 추정되는 remark 상위 5건 -->
+    <div class="chart chart-wide">
+      <h3>Top 5 Remarks Suspected to Cause Outliers</h3>
+      <div class="box">
+        {% for row in remark_top5 %}
+          <p>📅 {{ row['date'] }} — {{ row['remark'] }}</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- 📊 Remark Keyword Trend (장비별) -->
+    <div class="chart chart-wide">
+      <h3>Remark Keyword Trend (By Equipment)</h3>
+      {% if keyword_graphs %}
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 20px;">
+        {% for equip_id, plot_div in keyword_trend_html.items() %}
+        <div style="width: 48%;">
+          {{ plot_div | safe }}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="chart-placeholder">
+        None
+      </div>
+      {% endif %}
+
+      <!-- 📋 GPT 기반 이상징후 예측 결과 (표 형태로 출력) -->
+      {% if gpt_summary_html %}
+        <div class="gpt-summary-section" style="margin-top: 40px;">
+          <h3>GPT-based Anomaly Prediction Results</h3>
+          {{ gpt_summary_html | safe }}
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- 🧠 AI 분석 요약 결과 -->
+    <div class="chart chart-wide">
+      <h3>AI Summary of Analysis</h3>
+      <div style="
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 16px 20px;
+        font-size: 14px;
+        line-height: 1.6;
+        color: #333;
+        white-space: pre-wrap;
+        display: block;
+        text-align: left;"> 
+        {{ summary }}
+      </div>
+    </div>
+
+
+
+
+
+  <div>
+
+  <!-- JS 파일 연결 -->
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
