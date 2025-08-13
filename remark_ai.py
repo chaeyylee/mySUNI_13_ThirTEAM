@@ -13,9 +13,9 @@ import matplotlib.font_manager as fm
 import platform
 
 # 폰트 경로 지정
-font_path = os.path.join("fonts", "NanumGothic.ttf")  # 상대 경로로
+font_path = "fonts/NanumGothic.ttf"  # 실제 경로에 맞게 조정
 font_prop = fm.FontProperties(fname=font_path)
-matplotlib.rcParams['font.family'] = font_prop.get_name()
+plt.rcParams['font.family'] = font_prop.get_name()
 plt.rcParams["axes.unicode_minus"] = False
 
 
@@ -188,6 +188,7 @@ def run_remark_analysis(input_csv_path="uploads/result.csv",
             print("❌ GPT 응답 실패 또는 응답 없음")
     else:
         print("❌ 트렌드 그래프 이미지가 없어 GPT 분석 요청을 건너뜁니다.")
+
 
 
 
