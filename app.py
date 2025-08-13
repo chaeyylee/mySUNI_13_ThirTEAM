@@ -19,11 +19,14 @@ from collections import Counter, defaultdict
 import openai
 from forecast_utils import poly_forecast
 import plotly.graph_objects as go
-
+import platform
 
 # 한글 폰트 설정
-matplotlib.rc("font", family="Malgun Gothic")
-plt.rcParams["axes.unicode_minus"] = False
+if platform.system() == "Windows":
+    matplotlib.rc("font", family="Malgun Gothic")
+else:
+    matplotlib.rc("font", family="DejaVu Sans")  # Linux Render 서버용
+matplotlib.rcParams["axes.unicode_minus"] = False
 
 # Flask 설정
 app = Flask(__name__)
