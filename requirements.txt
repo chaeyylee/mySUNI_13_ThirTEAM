@@ -1,0 +1,14 @@
+flask
+gunicorn
+pandas
+plotly
+scikit-learn
+fpdf
+reportlab
+matplotlib
+statsmodels
+python-dotenv
+thefuzz
+tqdm
+kiwipiepy
+openai
