@@ -27,28 +27,29 @@ def run_remark_analysis(input_csv_path="uploads/result.csv",
     MODEL_NAME = "gpt-4o"
     MAX_OUTPUT_TOKENS = 500
     QUESTION = """
-    다음에 제공되는 각 장비별 키워드 트렌드 그래프를 분석하여,
-    향후 이상징후 발생 예상 시점과 유형을 예측하고 표 형태로만 출력하세요.
+    Please analyze the keyword trend graphs provided for each piece of equipment,
+    and predict the expected timing and type of anomalies. Output should be in table format only.
 
-    [목표]
-    - 각 장비별로 키워드 시계열 패턴을 분석
-    - 최근 변동률, 이동평균, 표준편차, 급등/급락 임계치(평균 ± 2σ) 등 통계적 지표를 계산하여 이상징후 판단
-    - 필요한 경우 단기 선형 회귀나 지수평활 등을 이용해 향후 추세를 예측
-    - 향후 언제(예상 날짜 범위) 이상징후가 발생할 가능성이 높은지 산출
-    - 발생할 가능성이 높은 이상징후 유형 추론
-    - 이상징후와 관련된 주요 키워드와 그 근거 제시
-    - 대응 권장사항 제시
+    [Objective]
+    - Analyze keyword time series patterns for each equipment
+    - Calculate statistical indicators such as recent variation rate, moving average, standard deviation, and spike/drop thresholds (mean ± 2σ) to detect anomalies
+    - If necessary, use short-term linear regression or exponential smoothing to forecast trends
+    - Estimate the future time window (date range) when anomalies are likely to occur
+    - Infer the most likely type of anomaly
+    - Provide key supporting keywords and evidence
+    - Suggest actionable countermeasures
 
-    [출력 형식]
-    다른 설명 없이 아래 표만 출력하세요.
+    [Output Format]
+    Only output the table below without any additional explanation.
 
-    | 장비ID | 예측 날짜 | 예상 이상징후 유형 | 근거 키워드 | 대응 권장사항 |
-    
-    조건:
-    - 날짜는 YYYY-MM-DD ± N일 형식으로 제시
-    - 근거 키워드와 수치는 실제 그래프에서 관찰·계산한 값(변동률 %, 표준편차, 회귀 추세 등)을 포함
-    - 대응 권장사항은 구체적이고 실행 가능한 조치 제안
-    - 표 외에 다른 텍스트는 절대 출력하지 말 것
+    | Equipment ID | Predicted Date | Expected Anomaly Type | Supporting Keywords | Recommended Action |
+
+    Conditions:
+    - Dates must follow the format YYYY-MM-DD ± N days
+    - Supporting keywords and values must be derived from actual graph observations and calculations (e.g., variation rate %, standard deviation, trendline, etc.)
+    - Recommended actions should be specific and executable
+    - Do NOT include any text outside of the table
+
     
     """
 
@@ -188,6 +189,7 @@ def run_remark_analysis(input_csv_path="uploads/result.csv",
             print("❌ GPT 응답 실패 또는 응답 없음")
     else:
         print("❌ 트렌드 그래프 이미지가 없어 GPT 분석 요청을 건너뜁니다.")
+
 
 
 
