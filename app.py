@@ -23,9 +23,9 @@ import platform
 import matplotlib.font_manager as fm
 
 # 폰트 경로 지정
-font_path = os.path.join("fonts", "NanumGothic.ttf")  # 상대 경로로
+font_path = "fonts/NanumGothic.ttf"  # 실제 경로에 맞게 조정
 font_prop = fm.FontProperties(fname=font_path)
-matplotlib.rcParams['font.family'] = font_prop.get_name()
+plt.rcParams['font.family'] = font_prop.get_name()
 plt.rcParams["axes.unicode_minus"] = False
 
 # Flask 설정
@@ -725,5 +725,6 @@ def summary():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
+
 
 
