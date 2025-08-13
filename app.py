@@ -22,10 +22,10 @@ import plotly.graph_objects as go
 import platform
 import matplotlib.font_manager as fm
 
-# 한글 폰트 설정
-font_path = os.path.join("fonts", "NanumGothic.ttf")  # 또는 malgun.ttf
-font_name = fm.FontProperties(fname=font_path).get_name()
-plt.rc("font", family=font_name)
+# 폰트 경로 지정
+font_path = os.path.join("fonts", "NanumGothic.ttf")  # 상대 경로로
+font_prop = fm.FontProperties(fname=font_path)
+matplotlib.rcParams['font.family'] = font_prop.get_name()
 plt.rcParams["axes.unicode_minus"] = False
 
 # Flask 설정
@@ -725,4 +725,5 @@ def summary():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
+
 
