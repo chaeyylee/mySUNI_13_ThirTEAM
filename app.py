@@ -20,13 +20,13 @@ import openai
 from forecast_utils import poly_forecast
 import plotly.graph_objects as go
 import platform
+import matplotlib.font_manager as fm
 
 # 한글 폰트 설정
-if platform.system() == "Windows":
-    matplotlib.rc("font", family="Malgun Gothic")
-else:
-    matplotlib.rc("font", family="DejaVu Sans")  # Linux Render 서버용
-matplotlib.rcParams["axes.unicode_minus"] = False
+font_path = os.path.join("fonts", "NanumGothic.ttf")  # 또는 malgun.ttf
+font_name = fm.FontProperties(fname=font_path).get_name()
+plt.rc("font", family=font_name)
+plt.rcParams["axes.unicode_minus"] = False
 
 # Flask 설정
 app = Flask(__name__)
@@ -725,3 +725,4 @@ def summary():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
+
